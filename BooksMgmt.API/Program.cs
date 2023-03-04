@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -22,7 +23,7 @@ builder.Services.AddScoped<ExceptionHandlingFilterAttribute>();
 builder.Services.AddSingleton<InMemoryData>();
 
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication("Basic")
     .AddJwtBearer(options =>
     {
         options.RequireHttpsMetadata = false;
@@ -35,7 +36,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
-    });
+    })
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("Basic", null); ;
 
 var app = builder.Build();
 

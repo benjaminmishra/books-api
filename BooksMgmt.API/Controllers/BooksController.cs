@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using BooksMgmt.API.Filters;
 using BooksMgmt.API.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ namespace BooksMgmt.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Basic", Roles = "Admin")]
     public class BooksController : ControllerBase
     {
         private readonly InMemoryData _data;
@@ -25,8 +26,7 @@ namespace BooksMgmt.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ExceptionHandlingFilter]
-        [Authorize(Roles = "Admin,User")]
-        public ActionResult<Book> GetBooks(int id)
+        public ActionResult<Book> GetBook(int id)
         {
             if (id <= 0)
                 throw new Exception("Cannot be less than or equal to zero");
@@ -46,7 +46,6 @@ namespace BooksMgmt.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ExceptionHandlingFilter]
-        [Authorize(Roles = "User")]
         public ActionResult<Book> GetAllBooks()
         {
             return Ok(_data.Books);
@@ -69,7 +68,6 @@ namespace BooksMgmt.API.Controllers
 
         [HttpPost]
         [ExceptionHandlingFilter]
-        [Authorize(Roles="Admin")]
         public IActionResult CreateBook(Book newBook)
         {
             _data.Books.Add(newBook);
@@ -78,7 +76,6 @@ namespace BooksMgmt.API.Controllers
 
         [HttpPatch("{id}")]
         [ExceptionHandlingFilter]
-        [Authorize(Roles = "Admin")]
         public IActionResult UpdateBook(BookUpdateRequest book,int id)
         {
             var bookToUpdate = _data.Books.FirstOrDefault(x=>x.Id==id);

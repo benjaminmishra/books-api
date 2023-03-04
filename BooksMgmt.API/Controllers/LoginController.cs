@@ -2,10 +2,13 @@
 using System.Security.Claims;
 using System.Text;
 using BooksMgmt.API.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+
+
 
 namespace BooksMgmt.API.Controllers
 {
@@ -22,7 +25,6 @@ namespace BooksMgmt.API.Controllers
             _data = data;
         }
 
-        [AllowAnonymous]
         [HttpPost]
         public ActionResult<string> Login([FromBody] UserLogin userLogin)
         {
@@ -32,7 +34,9 @@ namespace BooksMgmt.API.Controllers
                 return NotFound("User not found");
             }
 
-            return Ok(GenerateToken(user));
+            var token = GenerateToken(user);
+
+            return Ok(token);
         }
 
         private string GenerateToken(User user)
@@ -57,7 +61,5 @@ namespace BooksMgmt.API.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-
     }
 }
