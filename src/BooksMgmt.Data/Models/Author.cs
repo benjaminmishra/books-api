@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BooksMgmt.API.Models;
+namespace BooksMgmt.Data.Models;
 
 public class Author
 {

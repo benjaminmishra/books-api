@@ -1,4 +1,4 @@
-﻿namespace BooksMgmt.API.Models;
+﻿namespace BooksMgmt.API.Dto;
 
 public class ErrorResponse
 {

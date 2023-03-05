@@ -1,4 +1,4 @@
-﻿namespace BooksMgmt.API.Models;
+﻿namespace BooksMgmt.Data.Models;
 
 public class User
 {
