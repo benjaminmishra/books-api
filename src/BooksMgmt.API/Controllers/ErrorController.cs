@@ -2,22 +2,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace BooksMgmt.API.Controllers
+namespace BooksMgmt.API.Controllers;
+
+[ApiController]
+public class ErrorController : ControllerBase
 {
-    [ApiController]
-    public class ErrorController : ControllerBase
+    [HttpGet("/error")]
+    [ApiExplorerSettings(IgnoreApi = true)]
+    public IActionResult Get()
     {
-        [HttpGet("/error")]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Get()
-        {
-            var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
-            var stacktrace = context!.Error.StackTrace;
-            var errorMessage = context.Error.Message;
+        var context = HttpContext.Features.Get<IExceptionHandlerFeature>();
+        var stacktrace = context!.Error.StackTrace;
+        var errorMessage = context.Error.Message;
 
-            // do logging
+        // do logging
 
-            return Problem(errorMessage);
-        }
+        return Problem(errorMessage);
     }
 }

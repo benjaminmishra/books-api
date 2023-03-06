@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Text.Json;
-using BooksMgmt.API.Models;
+using BooksMgmt.API.Dto;
 
 namespace BooksMgmt.API.Middlewares;
 

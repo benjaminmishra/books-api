@@ -4,7 +4,7 @@ namespace BooksMgmt.Data.Repositories;
 
 public interface IBooksRepository
 {
-    public List<Book> GetAllBooks();
+    public Task<List<Book>> GetAllBooks();
 
     public Book GetBookById(int id);
 

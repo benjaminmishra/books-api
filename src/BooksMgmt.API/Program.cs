@@ -3,17 +3,16 @@ using BooksMgmt.API;
 using BooksMgmt.API.Controllers;
 using BooksMgmt.API.Filters;
 using BooksMgmt.API.Middlewares;
+using BooksMgmt.Data.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -21,6 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ExceptionHandlingFilterAttribute>();
 
 builder.Services.AddSingleton<InMemoryData>();
+
+builder.Services.AddScoped<IBooksRepository, BooksRepository>();
 
 
 builder.Services.AddAuthentication("Basic")
