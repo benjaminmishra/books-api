@@ -51,7 +51,7 @@ namespace BooksMgmt.Data.Repositories
 
                     var selectAuthorCmd =
                         new SqlCommand("select Name,Gender,DateofBirth from dbo.Authors where Id=@authorid;", conn);
-                    selectAuthorCmd.Parameters.Add("@authorid", SqlDbType.Int, (int)bookReader["AuthorId"]);
+                    selectAuthorCmd.Parameters.Add(new SqlParameter("@authorid", (int)bookReader["AuthorId"]));
 
                     var authorReader = await selectAuthorCmd.ExecuteReaderAsync();
                     await authorReader.ReadAsync();

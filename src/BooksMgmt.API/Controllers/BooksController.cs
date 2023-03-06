@@ -47,9 +47,10 @@ public class BooksController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ExceptionHandlingFilter]
-    public ActionResult<List<Book>> GetAllBooks()
+    public async Task<ActionResult<List<Book>>> GetAllBooks()
     {
-        return Ok(_booksRepository.GetAllBooks());
+        var books = await _booksRepository.GetAllBooks();
+        return Ok(books);
     }
 
 
