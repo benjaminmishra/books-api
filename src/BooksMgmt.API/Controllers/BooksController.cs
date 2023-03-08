@@ -9,7 +9,7 @@ namespace BooksMgmt.API.Controllers;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-[Authorize(AuthenticationSchemes = "Basic", Roles = "Admin")]
+[Authorize(AuthenticationSchemes = "Basic")]
 public class BooksController : ControllerBase
 {
     private readonly IBooksRepository _booksRepository;
@@ -30,15 +30,15 @@ public class BooksController : ControllerBase
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ExceptionHandlingFilter]
     [Authorize(Roles = "Admin,User")]
-    public ActionResult<Book> GetBook(int id)
+    public async Task<ActionResult<Book>> GetBook(int id)
     {
-        var book = _data.Books.FirstOrDefault(x => x.Id == id);
+        var book = await _booksRepository.GetBookById(id);
 
         if (book == null)
         {
             return NotFound("Nothing found");
         }
-
+        
         return Ok(book);
     }
 

@@ -6,7 +6,7 @@ public interface IBooksRepository
 {
     public Task<List<Book>> GetAllBooks();
 
-    public Book GetBookById(int id);
+    public Task<Book?> GetBookById(int id);
 
     public void AddBook(Book book);
 
