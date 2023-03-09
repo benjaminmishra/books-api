@@ -16,7 +16,7 @@ public class BooksRepository : IBooksRepository
     public BooksRepository(ILogger<BooksRepository> logger, IConfiguration configuration)
     {
         _logger = logger;
-        _connStr = configuration.GetConnectionString("SqlServer")?? throw new Exception("ConnectionString section is either empty or does not exist");
+        _connStr = configuration.GetConnectionString("SqlServer") ?? throw new Exception("ConnectionString section is either empty or does not exist");
     }
 
     public void AddBook(Book book)
@@ -88,14 +88,17 @@ public class BooksRepository : IBooksRepository
     {
         Book? book = new();
         var dataSet = new DataSet();
+
+        string selectStatments =
+            @"select Id, Title, Description, AuthorId, ISBN, GENRE from dbo.Books where Id=@bookid;
+select Id,Name,Gender,DateofBirth from dbo.Authors;";
+
+
         try
         {
             await using (SqlConnection conn = new SqlConnection(_connStr))
             {
-                var command =
-                    new SqlCommand(
-                        "select Id, Title, Description, AuthorId, ISBN, GENRE from dbo.Books;select Id,Name,Gender,DateofBirth from dbo.Authors;",
-                        conn);
+                var command = new SqlCommand(selectStatments, conn);
                 command.Parameters.Add(new SqlParameter("@bookid", id));
 
                 var adapter = new SqlDataAdapter(command);
@@ -109,24 +112,24 @@ public class BooksRepository : IBooksRepository
             var authorTable = dataSet.Tables[1];
 
             var bookQuery = from bookRow in booksTable.AsEnumerable()
-                join authorRow in authorTable.AsEnumerable()
-                    on bookRow["AuthorId"] equals authorRow["Id"]
-                where (int)bookRow["Id"] == id && (int)authorRow["Id"] == (int)bookRow["AuthorId"]
-                select new Book
-                {
-                    Id = (int)bookRow["Id"],
-                    Description = (string)bookRow["Description"],
-                    Genre = (string)bookRow["Genre"],
-                    ISBN = (string)bookRow["ISBN"],
-                    Title = (string)bookRow["Title"],
-                    Author = new Author
-                    {
-                        Id = (int)authorRow["Id"],
-                        DateOfBirth = (DateTime)authorRow["DateofBirth"],
-                        Gender = (string)authorRow["Gender"],
-                        Name = (string)authorRow["Name"]
-                    }
-                };
+                            join authorRow in authorTable.AsEnumerable()
+                                on bookRow["AuthorId"] equals authorRow["Id"]
+                            where (int)bookRow["Id"] == id && (int)authorRow["Id"] == (int)bookRow["AuthorId"]
+                            select new Book
+                            {
+                                Id = (int)bookRow["Id"],
+                                Description = (string)bookRow["Description"],
+                                Genre = (string)bookRow["Genre"],
+                                ISBN = (string)bookRow["ISBN"],
+                                Title = (string)bookRow["Title"],
+                                Author = new Author
+                                {
+                                    Id = (int)authorRow["Id"],
+                                    DateOfBirth = (DateTime)authorRow["DateofBirth"],
+                                    Gender = (string)authorRow["Gender"],
+                                    Name = (string)authorRow["Name"]
+                                }
+                            };
 
             book = bookQuery.FirstOrDefault();
 
