@@ -2,11 +2,13 @@
 using System.Security.Claims;
 using System.Text;
 using BooksMgmt.API.Dto;
+using BooksMgmt.Data;
 using BooksMgmt.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -18,9 +20,9 @@ namespace BooksMgmt.API.Controllers;
 public class LoginController : ControllerBase
 {
     private readonly IConfiguration _config;
-    private readonly InMemoryData _data;
+    private readonly BooksDbContext _data;
 
-    public LoginController(IConfiguration configuration, InMemoryData data)
+    public LoginController(IConfiguration configuration, BooksDbContext data)
     {
         _config = configuration;
         _data = data;
@@ -29,7 +31,7 @@ public class LoginController : ControllerBase
     [HttpPost]
     public ActionResult<string> Login([FromBody] UserLogin userLogin)
     {
-        var user = _data.Users.FirstOrDefault(x=>x.Password==userLogin.Password && x.Name==userLogin.Username);
+        var user = _data.Users.Include(x=>x.Role).FirstOrDefault(x=>x.Password==userLogin.Password && x.Name==userLogin.Username);
         if (user == null)
         {
             return NotFound("User not found");
@@ -51,7 +53,7 @@ public class LoginController : ControllerBase
             new Claim(ClaimTypes.NameIdentifier, user.Name),
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.GivenName, user.Name),
-            new Claim(ClaimTypes.Role, user.Role)
+            new Claim(ClaimTypes.Role, user.Role.Name)
         };
 
         var token = new JwtSecurityToken(_config["Jwt:Issuer"],

@@ -4,8 +4,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BooksMgmt.Data;
 using BooksMgmt.Data.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -13,11 +15,11 @@ namespace BooksMgmt.API;
 
 public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    private readonly InMemoryData _data;
-    public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, InMemoryData data,  ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) 
+    private readonly BooksDbContext _data;
+    public BasicAuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, BooksDbContext dbContext, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
         : base(options, logger, encoder, clock)
     {
-        _data = data;
+        _data = dbContext;
     }
 
     protected async override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -47,12 +49,12 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
         Claim[] claims = {
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new(ClaimTypes.Name, user.Name),
-                new (ClaimTypes.Role, user.Role),
+                new (ClaimTypes.Role, user.Role.Name),
                 new (ClaimTypes.Email, user.Email),
             };
         var identity = new ClaimsIdentity(claims, Scheme.Name);
         var id2 = new ClaimsIdentity(claims, Scheme.Name);
-        var principal = new ClaimsPrincipal(new ClaimsIdentity[] {identity,id2});
+        var principal = new ClaimsPrincipal(new ClaimsIdentity[] { identity, id2 });
 
         var ticket = new AuthenticationTicket(principal, Scheme.Name);
 
@@ -61,6 +63,6 @@ public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSc
 
     private User? GetUser(string email, string password)
     {
-        return _data.Users.FirstOrDefault(u => u.Email == email && u.Password == password);
+        return _data.Users.Include(x => x.Role).FirstOrDefault(u => u.Email == email && u.Password == password);
     }
 }

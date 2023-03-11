@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using BooksMgmt.Data.Models;
 
-namespace BooksMgmt.API;
+namespace BooksMgmt.Data;
 
 public class InMemoryData
 {
@@ -11,7 +11,7 @@ public class InMemoryData
         {
             Id=1,
             Title = "Harry Potter",
-            //Author = new Author { Id=5, DateOfBirth = new DateTime(1989,12,25), Gender = "Female",  Name ="JK Rowling"},
+            AuthorId = 5,
             Description = "A book about the adventures of Harry Potter",
             Genre = "Adventure",
             Isbn = "12AVC456"
@@ -21,7 +21,7 @@ public class InMemoryData
         {
             Id=2,
             Title = "The Lord Of The Rings",
-            //Author = new Author {Id=10,DateOfBirth = new DateTime(1892,1,3), Gender = "Male",  Name ="J.R.R. Tolkien"},
+            AuthorId = 1,
             Description = "A book about the adventures of Harry Potter",
             Genre = "Fantasy",
             Isbn = "89AAVC456"
@@ -30,11 +30,33 @@ public class InMemoryData
         {
             Id=3,
             Title = "Song of Ice and Fire",
-            //Author = new Author {Id=10,DateOfBirth = new DateTime(1892,1,3), Gender = "Male",  Name ="J.R.R. Martin"},
+            AuthorId =2,
             Description = "A book about Westrose and its rulers",
             Genre = "Fantasy",
             Isbn = "ABC45690"
         },
+    };
+
+    public List<Author> Authors = new List<Author>()
+    {
+        new() {Id=1,DateOfBirth = new DateTime(1892,1,3), Gender = "Male",  Name ="J.R.R. Tolkien"},
+        new() {Id=2,DateOfBirth = new DateTime(1892,1,3), Gender = "Male",  Name ="J.R.R. Martin"},
+        new() { Id=5, DateOfBirth = new DateTime(1989,12,25), Gender = "Female",  Name ="JK Rowling"},
+
+    };
+
+    public List<UserRole> UserRoles = new List<UserRole>()
+    {
+        new()
+        {
+            Id = 1,
+            Name = "Admin"
+        },
+        new()
+        {
+            Id=2,
+            Name="User"
+        }
     };
 
     public List<User> Users = new()
@@ -45,7 +67,8 @@ public class InMemoryData
             Email = "xyz@email.com",
             Name = "XYZ",
             Password = "password1",
-            Role = "Admin"
+            RoleId = 1
+            
         },
         new()
         {
@@ -53,7 +76,7 @@ public class InMemoryData
             Email = "efg@email.com",
             Name = "EFG",
             Password = "password2",
-            Role = "User"
+            RoleId = 2
         }
     };
 }
