@@ -16,12 +16,48 @@ public class BooksRepository : IBooksRepository
     public BooksRepository(ILogger<BooksRepository> logger, IConfiguration configuration)
     {
         _logger = logger;
-        _connStr = configuration.GetConnectionString("SqlServer") ?? throw new Exception("ConnectionString section is either empty or does not exist");
+        _connStr = configuration.GetConnectionString("SqlServer");
     }
 
-    public void AddBook(Book book)
+    public async Task AddBook(Book book)
     {
-        throw new NotImplementedException();
+        await using SqlConnection conn = new SqlConnection(_connStr);
+        await conn.OpenAsync();
+
+        await using SqlTransaction transaction = conn.BeginTransaction();
+        try
+        {
+            // BEGIN TRANSACTION
+            var insertCmd =
+                new SqlCommand("INSERT INTO dbo.Books (Title, Description, AuthorId, ISBN, GENRE) " +
+                               "VALUES(@title,@desc,@authorId,@isbn,@gen)", conn);
+
+            var insertAuthor =
+                new SqlCommand("INSERT INTO dbo.Authors (Name, DateOfBirth, Gender) " +
+                               "VALUES(@name,@dob,@gender)", conn);
+
+            insertCmd.Parameters.Add(new SqlParameter("@title", book.Title));
+            insertCmd.Parameters.Add(new SqlParameter("@desc", book.Description));
+            insertCmd.Parameters.Add(new SqlParameter("@authorId", book.Author.Id));
+            insertCmd.Parameters.Add(new SqlParameter("@isbn", book.Isbn));
+            insertCmd.Parameters.Add(new SqlParameter("@gen", book.Genre));
+
+            insertAuthor.Parameters.Add(new SqlParameter("@name", book.Author.Name));
+            insertAuthor.Parameters.Add(new SqlParameter("@dob", book.Author.DateOfBirth));
+            insertAuthor.Parameters.Add(new SqlParameter("@gender", book.Author.Gender));
+
+            await insertAuthor.ExecuteNonQueryAsync();
+            await insertCmd.ExecuteNonQueryAsync();
+
+            await transaction.CommitAsync();
+            //COMMIT
+        }
+        catch
+        {
+            // ROLLBACK
+            await transaction.RollbackAsync();
+        }
+        // END
     }
 
     public void DeleteBook(int id)
@@ -42,16 +78,17 @@ public class BooksRepository : IBooksRepository
 
             var selectBookCmd =
                 new SqlCommand("select Id, Title, Description, AuthorId, ISBN, GENRE from dbo.Books;", conn);
-            var bookReader = await selectBookCmd.ExecuteReaderAsync();
+            SqlDataReader bookReader = await selectBookCmd.ExecuteReaderAsync();
 
             while (await bookReader.ReadAsync())
             {
+                #region FillBookObj
                 var book = new Book
                 {
                     Title = bookReader["Title"].ToString() ?? string.Empty,
                     Description = bookReader["Description"].ToString() ?? string.Empty,
                     Genre = bookReader["Genre"].ToString() ?? string.Empty,
-                    ISBN = bookReader["ISBN"].ToString() ?? string.Empty
+                    Isbn = bookReader["ISBN"].ToString() ?? string.Empty
                 };
 
                 var selectAuthorCmd =
@@ -71,6 +108,7 @@ public class BooksRepository : IBooksRepository
                 book.Author = author;
 
                 books.Add(book);
+#endregion
             }
         }
         catch (Exception ex)
@@ -87,7 +125,7 @@ public class BooksRepository : IBooksRepository
     public async Task<Book?> GetBookById(int id)
     {
         Book? book = new();
-        var dataSet = new DataSet();
+        DataSet dataSet = new DataSet();
 
         string selectStatments =
             @"select Id, Title, Description, AuthorId, ISBN, GENRE from dbo.Books where Id=@bookid;
@@ -104,15 +142,17 @@ select Id,Name,Gender,DateofBirth from dbo.Authors;";
                 var adapter = new SqlDataAdapter(command);
 
                 var result = adapter.Fill(dataSet);
-
+                
                 if (result == 0) return default; // nothing added to DataSet just return null
             }
 
-            var booksTable = dataSet.Tables[0];
-            var authorTable = dataSet.Tables[1];
 
-            var bookQuery = from bookRow in booksTable.AsEnumerable()
-                            join authorRow in authorTable.AsEnumerable()
+            var booksTable = dataSet.Tables[0].AsEnumerable();
+            var authorTable = dataSet.Tables[1].AsEnumerable();
+
+
+            var bookQuery = from bookRow in booksTable
+                            join authorRow in authorTable
                                 on bookRow["AuthorId"] equals authorRow["Id"]
                             where (int)bookRow["Id"] == id && (int)authorRow["Id"] == (int)bookRow["AuthorId"]
                             select new Book
@@ -120,14 +160,14 @@ select Id,Name,Gender,DateofBirth from dbo.Authors;";
                                 Id = (int)bookRow["Id"],
                                 Description = (string)bookRow["Description"],
                                 Genre = (string)bookRow["Genre"],
-                                ISBN = (string)bookRow["ISBN"],
+                                Isbn = (string)bookRow["ISBN"],
                                 Title = (string)bookRow["Title"],
                                 Author = new Author
                                 {
-                                    Id = (int)authorRow["Id"],
+                                    Name = (string)authorRow["Name"],
                                     DateOfBirth = (DateTime)authorRow["DateofBirth"],
                                     Gender = (string)authorRow["Gender"],
-                                    Name = (string)authorRow["Name"]
+                                    Id = (int)authorRow["Id"]
                                 }
                             };
 

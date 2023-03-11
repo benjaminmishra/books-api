@@ -8,7 +8,7 @@ public interface IBooksRepository
 
     public Task<Book?> GetBookById(int id);
 
-    public void AddBook(Book book);
+    public Task AddBook(Book book);
 
     public void UpdateBook(Book book);
 

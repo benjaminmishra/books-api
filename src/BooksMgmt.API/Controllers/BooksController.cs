@@ -1,9 +1,11 @@
 ﻿using BooksMgmt.API.Dto;
 using BooksMgmt.API.Filters;
+using BooksMgmt.Data;
 using BooksMgmt.Data.Models;
 using BooksMgmt.Data.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BooksMgmt.API.Controllers;
 
@@ -12,13 +14,13 @@ namespace BooksMgmt.API.Controllers;
 [Authorize(AuthenticationSchemes = "Basic")]
 public class BooksController : ControllerBase
 {
-    private readonly IBooksRepository _booksRepository;
     private readonly InMemoryData _data;
     private readonly ILogger<BooksController> _logger;
+    private readonly BooksDbContext _booksDbContext;
 
-    public BooksController(IBooksRepository booksRepository, ILogger<BooksController> logger, InMemoryData data)
+    public BooksController(ILogger<BooksController> logger, InMemoryData data, BooksDbContext context)
     {
-        _booksRepository = booksRepository;
+        _booksDbContext = context;
         _logger = logger;
         _data = data;
     }
@@ -32,14 +34,11 @@ public class BooksController : ControllerBase
     [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<Book>> GetBook(int id)
     {
-        var book = await _booksRepository.GetBookById(id);
+        var bookQuery = from book in _booksDbContext.Books
+                        where book.Id == id
+                        select book;
 
-        if (book == null)
-        {
-            return NotFound("Nothing found");
-        }
-        
-        return Ok(book);
+        return Ok(await bookQuery.Include(x => x.Author).ToListAsync());
     }
 
     [HttpGet]
@@ -47,40 +46,61 @@ public class BooksController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ExceptionHandlingFilter]
-    public async Task<ActionResult<List<Book>>> GetAllBooks()
+    public async Task<ActionResult<List<Book>>> GetAllBooks([FromQuery] string? genre, [FromQuery] string? title)
     {
-        var books = await _booksRepository.GetAllBooks();
-        return Ok(books);
+        var booksQuery = _booksDbContext.Books.Include(b => b.Author);
+
+        if (genre != null)
+            booksQuery.Where(x => x.Genre == genre);
+
+        if (title != null)
+            booksQuery.Where(x => x.Title.Contains(title));
+
+
+        var book = await booksQuery.ToListAsync();
+
+        return Ok(book);
     }
 
 
     [HttpGet("{bookId}/Authors/{authorId}")]
     public ActionResult<Author> GetAuthor(int bookId, int authorId)
     {
-        var author = _data.Books.FirstOrDefault(x => x.Id == bookId && x.Author.Id == authorId)?.Author;
+        //var author = _data.Books.FirstOrDefault(x => x.Id == bookId && x.Author.Id == authorId)?.Author;
 
-        if (author == null)
-        {
-            return NotFound("Author not found");
-        }
+        //if (author == null)
+        //{
+        //    return NotFound("Author not found");
+        //}
 
-        return Ok(author);
+        //return Ok(author);
+
+        return Ok();
     }
 
 
     [HttpPost]
     [ExceptionHandlingFilter]
-    public IActionResult CreateBook(Book newBook)
+    public IActionResult CreateBook(BookCreateRequest createBookReq)
     {
-        _data.Books.Add(newBook);
-        return Ok(newBook);
+        Book book = new Book()
+        {
+            Title = createBookReq.Title,
+            Description = createBookReq.Description,
+            Genre = createBookReq.Genre,
+            Author = new Author()
+            {
+
+            }
+        };
+        return Ok(book.Id);
     }
 
     [HttpPatch("{id}")]
     [ExceptionHandlingFilter]
-    public IActionResult UpdateBook(BookUpdateRequest book,int id)
+    public IActionResult UpdateBook(BookUpdateRequest book, int id)
     {
-        var bookToUpdate = _data.Books.FirstOrDefault(x=>x.Id==id);
+        var bookToUpdate = _data.Books.FirstOrDefault(x => x.Id == id);
 
         if (bookToUpdate == null)
         {
@@ -91,10 +111,29 @@ public class BooksController : ControllerBase
         bookToUpdate.Title = book.Title;
         bookToUpdate.Description = book.Description;
         bookToUpdate.Genre = book.Genre;
-        bookToUpdate.ISBN = book.ISBN;
+        bookToUpdate.Isbn = book.ISBN;
 
         return Ok(bookToUpdate);
     }
 
+    [HttpDelete("{id}")]
+    [ExceptionHandlingFilter]
+    public async Task<IActionResult> DeleteBook(int id)
+    {
+        var bookQuery = _booksDbContext.Books.Include(b => b.Author).Where(x => x.Id == id);
 
+        var book = await bookQuery.FirstOrDefaultAsync();
+
+        if (book == null)
+        {
+            return NotFound();
+        }
+
+        _booksDbContext.Books.Remove(book);
+        _booksDbContext.Authors.Remove(book.Author);
+
+        await _booksDbContext.SaveChangesAsync();
+
+        return Ok();
+    }
 }

@@ -3,10 +3,12 @@ using BooksMgmt.API;
 using BooksMgmt.API.Controllers;
 using BooksMgmt.API.Filters;
 using BooksMgmt.API.Middlewares;
+using BooksMgmt.Data;
 using BooksMgmt.Data.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -19,9 +21,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ExceptionHandlingFilterAttribute>();
 
+builder.Services.AddDbContext<BooksDbContext>(options =>
+    options.UseSqlServer(
+        "Data Source=localhost;Initial Catalog=booksdb;User Id=sa;Password=p@ssw0rd!!;MultipleActiveResultSets=True;TrustServerCertificate=True"));
+
 builder.Services.AddSingleton<InMemoryData>();
 
-builder.Services.AddScoped<IBooksRepository, BooksRepository>();
+builder.Services.AddScoped<IBooksRepository, BooksRepositoryEf>();
 
 
 builder.Services.AddAuthentication("Basic")
