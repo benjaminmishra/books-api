@@ -13,5 +13,7 @@ public class Author
     public string Gender { get; set; }
 
     public DateTime DateOfBirth { get; set; }
+
+    public int Age { get; set; }
 }
 

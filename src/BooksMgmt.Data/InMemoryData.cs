@@ -39,9 +39,9 @@ public class InMemoryData
 
     public List<Author> Authors = new List<Author>()
     {
-        new() {Id=1,DateOfBirth = new DateTime(1892,1,3), Gender = "Male",  Name ="J.R.R. Tolkien"},
-        new() {Id=2,DateOfBirth = new DateTime(1892,1,3), Gender = "Male",  Name ="J.R.R. Martin"},
-        new() { Id=5, DateOfBirth = new DateTime(1989,12,25), Gender = "Female",  Name ="JK Rowling"},
+        new() {Id=1,DateOfBirth = new DateTime(1892,1,3), Gender = "Male",  Name ="J.R.R. Tolkien", Age = 50},
+        new() {Id=2,DateOfBirth = new DateTime(1892,1,3), Gender = "Male",  Name ="J.R.R. Martin", Age=50},
+        new() { Id=5, DateOfBirth = new DateTime(1989,12,25), Gender = "Female",  Name ="JK Rowling", Age=50},
 
     };
 

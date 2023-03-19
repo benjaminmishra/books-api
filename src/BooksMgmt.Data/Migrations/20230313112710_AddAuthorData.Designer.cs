@@ -4,6 +4,7 @@ using BooksMgmt.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BooksMgmt.Data.Migrations
 {
     [DbContext(typeof(BooksDbContext))]
-    partial class BooksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230313112710_AddAuthorData")]
+    partial class AddAuthorData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,15 +146,6 @@ namespace BooksMgmt.Data.Migrations
                             Genre = "Fantasy",
                             Isbn = "ABC45690",
                             Title = "Song of Ice and Fire"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AuthorId = 500,
-                            Description = "A book about Westrose and its rulers",
-                            Genre = "Fantasy",
-                            Isbn = "ABC45690",
-                            Title = "Song of Ice and Fire2"
                         });
                 });
 

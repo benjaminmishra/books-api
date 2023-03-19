@@ -4,6 +4,7 @@ using BooksMgmt.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BooksMgmt.Data.Migrations
 {
     [DbContext(typeof(BooksDbContext))]
-    partial class BooksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230313111121_AddedColumnToAuthors")]
+    partial class AddedColumnToAuthors
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,14 +75,6 @@ namespace BooksMgmt.Data.Migrations
                             DateOfBirth = new DateTime(1989, 12, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Gender = "Female",
                             Name = "JK Rowling"
-                        },
-                        new
-                        {
-                            Id = 500,
-                            Age = 25,
-                            DateOfBirth = new DateTime(2000, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Gender = "Female",
-                            Name = "XYZ Author"
                         });
                 });
 
@@ -143,15 +138,6 @@ namespace BooksMgmt.Data.Migrations
                             Genre = "Fantasy",
                             Isbn = "ABC45690",
                             Title = "Song of Ice and Fire"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AuthorId = 500,
-                            Description = "A book about Westrose and its rulers",
-                            Genre = "Fantasy",
-                            Isbn = "ABC45690",
-                            Title = "Song of Ice and Fire2"
                         });
                 });
 

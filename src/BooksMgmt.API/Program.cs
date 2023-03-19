@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using BooksMgmt.Domain;
+
+;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +29,7 @@ builder.Services.AddDbContext<BooksDbContext>(options =>
         "Data Source=localhost;Initial Catalog=booksdb;User Id=sa;Password=p@ssw0rd!!;MultipleActiveResultSets=True;TrustServerCertificate=True"));
 
 builder.Services.AddSingleton<InMemoryData>();
-
+builder.Services.AddScoped<AuthorService>();
 builder.Services.AddScoped<IBooksRepository, BooksRepositoryEf>();
 
 

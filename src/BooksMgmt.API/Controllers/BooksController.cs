@@ -34,9 +34,7 @@ public class BooksController : ControllerBase
     [Authorize(Roles = "Admin,User")]
     public async Task<ActionResult<Book>> GetBook(int id)
     {
-        var bookQuery = from book in _booksDbContext.Books
-                        where book.Id == id
-                        select book;
+        var bookQuery = _booksDbContext.Books.FromSqlRaw("sp_doSomething 1");
 
         return Ok(await bookQuery.Include(x => x.Author).ToListAsync());
     }
@@ -88,10 +86,6 @@ public class BooksController : ControllerBase
             Title = createBookReq.Title,
             Description = createBookReq.Description,
             Genre = createBookReq.Genre,
-            Author = new Author()
-            {
-
-            }
         };
         return Ok(book.Id);
     }

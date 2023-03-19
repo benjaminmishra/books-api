@@ -15,12 +15,12 @@ public class Book
     [ForeignKey("Author")]
     public int AuthorId { get; set; }
 
+    public Author Author { get; set; }
+
     [Required]
     public string Isbn { get; set; } = string.Empty;
 
     [Required]
     public string Genre { get; set; } = string.Empty;
-
-    public Author Author { get; set; }
 }
 
