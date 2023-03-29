@@ -12,8 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using BooksMgmt.Domain;
 
-;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +22,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ExceptionHandlingFilterAttribute>();
 
-builder.Services.AddDbContext<BooksDbContext>(options =>
-    options.UseSqlServer(
-        "Data Source=localhost;Initial Catalog=booksdb;User Id=sa;Password=p@ssw0rd!!;MultipleActiveResultSets=True;TrustServerCertificate=True"));
+builder.Services.AddDbContext<BooksDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
 builder.Services.AddSingleton<InMemoryData>();
 builder.Services.AddScoped<AuthorService>();

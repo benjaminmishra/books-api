@@ -1,0 +1,7 @@
+publish/
+bin/
+debug/
+release/
+obj/
+.vs/
+.vscode/

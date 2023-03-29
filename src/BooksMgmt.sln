@@ -7,11 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksMgmt.API", "BooksMgmt.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksMgmt.Data", "BooksMgmt.Data\BooksMgmt.Data.csproj", "{38B95A88-8F7F-4E9F-9CC5-DBE38045F6BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "..\build\_build.csproj", "{C6ECEC65-8D30-405B-88D1-8EC9EF28567A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksMgmt.Domain", "BooksMgmt.Domain\BooksMgmt.Domain.csproj", "{8BE93512-E97F-47C3-8691-459594E5A41B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksMgmt.Domain", "BooksMgmt.Domain\BooksMgmt.Domain.csproj", "{8BE93512-E97F-47C3-8691-459594E5A41B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksMgmt.Domain.Tests", "BooksMgmt.Domain.Tests\BooksMgmt.Domain.Tests.csproj", "{AFF1D24D-F06A-41DE-B868-5C6CB65AA404}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksMgmt.Domain.Tests", "BooksMgmt.Domain.Tests\BooksMgmt.Domain.Tests.csproj", "{AFF1D24D-F06A-41DE-B868-5C6CB65AA404}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,8 +25,6 @@ Global
 		{38B95A88-8F7F-4E9F-9CC5-DBE38045F6BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38B95A88-8F7F-4E9F-9CC5-DBE38045F6BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38B95A88-8F7F-4E9F-9CC5-DBE38045F6BD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6ECEC65-8D30-405B-88D1-8EC9EF28567A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6ECEC65-8D30-405B-88D1-8EC9EF28567A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BE93512-E97F-47C3-8691-459594E5A41B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8BE93512-E97F-47C3-8691-459594E5A41B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BE93512-E97F-47C3-8691-459594E5A41B}.Release|Any CPU.ActiveCfg = Release|Any CPU
