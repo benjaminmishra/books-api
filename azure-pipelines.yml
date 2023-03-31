@@ -8,7 +8,7 @@ trigger:
 - new-branch
 
 pool:
-  vmImage: 'linux-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
   solution: '**/*.sln'
