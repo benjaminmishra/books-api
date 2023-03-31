@@ -8,12 +8,17 @@ trigger:
 - new-branch
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'linux-latest'
 
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+
+parameters:
+  - name: MyName
+    type: string
+    default: xyz
 
 steps:
 - task: NuGetToolInstaller@1
