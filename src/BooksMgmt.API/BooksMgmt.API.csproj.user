@@ -6,7 +6,7 @@
     <Controller_SelectedScaffolderCategoryPath>root/Common/Api</Controller_SelectedScaffolderCategoryPath>
     <WebStackScaffolding_ControllerDialogWidth>650</WebStackScaffolding_ControllerDialogWidth>
     <WebStackScaffolding_DbContextDialogWidth>650</WebStackScaffolding_DbContextDialogWidth>
-    <NameOfLastUsedPublishProfile>D:\OneDrive\OneDrive - Ringtail Interactive AB\Documents\Training\Session Code Examples\books-api\src\BooksMgmt.API\Properties\PublishProfiles\books-mgmt-api - Zip Deploy.pubxml</NameOfLastUsedPublishProfile>
+    <NameOfLastUsedPublishProfile>D:\OneDrive\OneDrive - Ringtail Interactive AB\Documents\Training\Session Code Examples\books-api\src\BooksMgmt.API\Properties\PublishProfiles\BooksMgmtAPI20230329150858.pubxml</NameOfLastUsedPublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
