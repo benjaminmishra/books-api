@@ -26,13 +26,6 @@ steps:
   inputs:
     command: 'build'
     projects: './src/BooksMgmt.API/BooksMgmt.API.csproj'
-
-- task: VSBuild@1
-  inputs:
-    solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
     
 - task: DotNetCoreCLI@2
   inputs:
