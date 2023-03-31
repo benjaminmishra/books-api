@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: 'ubuntu-latest'
 
 variables:
   solution: '**/*.sln'
@@ -37,11 +37,12 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
-
-- task: AzureRmWebAppDeployment@4
+    
+- task: AzureWebApp@1
   inputs:
-    ConnectionType: 'PublishProfile'
-    PublishProfilePath: '$(System.DefaultWorkingDirectory)/**/*.pubxml'
-    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-
+    azureSubscription: 'My-Subscripption1-Pay-As-You-Go(1)(c7401fd2-f8d0-48a2-ac5a-c3ae921545c0)'
+    appType: 'webAppLinux'
+    appName: BooksMgmtAPI
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    runtimeStack: 'DOTNETCORE|7.0'
 
