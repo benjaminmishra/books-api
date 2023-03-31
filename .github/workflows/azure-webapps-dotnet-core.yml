@@ -53,7 +53,7 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release --project ./src/BooksMgmt.API/BooksMgmt.API.csproj
+        run: dotnet build ./src/BooksMgmt.API/BooksMgmt.API.csproj
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
