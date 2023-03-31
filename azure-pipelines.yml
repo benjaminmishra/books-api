@@ -22,6 +22,7 @@ steps:
     restoreSolution: '$(solution)'
 
 - task: DotNetCoreCLI@2
+  displayName: 'Build using dotnet cli'
   inputs:
     command: 'build'
     projects: './src/BooksMgmt.API/BooksMgmt.API.csproj'
