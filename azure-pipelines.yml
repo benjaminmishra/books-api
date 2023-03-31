@@ -42,7 +42,7 @@ steps:
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
-    azureSubscription: 'My-Subscripption1-Pay-As-You-Go(c7401fd2-f8d0-48a2-ac5a-c3ae921545c0)'
+    azureSubscription: 'My-Subscripption1-Pay-As-You-Go(1)(c7401fd2-f8d0-48a2-ac5a-c3ae921545c0)'
     appType: 'webAppLinux'
     WebAppName: 'BooksMgmtAPI'
     packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
